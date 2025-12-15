@@ -1,0 +1,21 @@
+framework:
+  - terraform
+
+directory:
+  - modules
+  - environments
+
+skip-check:
+  - CKV_AWS_79
+  - CKV_AWS_23
+  - CKV_AWS_130
+  - CKV_AWS_88
+
+compact: false
+output: cli
+soft-fail: false
+download-external-modules: true
+
+hard-fail-on:
+  - CRITICAL
+  - HIGH
