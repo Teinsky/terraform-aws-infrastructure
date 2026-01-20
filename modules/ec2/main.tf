@@ -23,6 +23,7 @@ resource "aws_instance" "public" {
   subnet_id              = var.public_subnet_id
   vpc_security_group_ids = [var.public_security_group_id]
   key_name               = var.key_name
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   # Enable public IP
   associate_public_ip_address = true
@@ -31,7 +32,7 @@ resource "aws_instance" "public" {
   # Checkov: CKV_AWS_135 - Ensure EC2 instance is using IMDSv2
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "required"  # Enforce IMDSv2
+    http_tokens                 = "required" # Enforce IMDSv2
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "enabled"
   }
@@ -41,7 +42,7 @@ resource "aws_instance" "public" {
     volume_size           = var.root_volume_size
     volume_type           = "gp3"
     delete_on_termination = true
-    encrypted             = true  # Checkov: CKV_AWS_8
+    encrypted             = true # Checkov: CKV_AWS_8
 
     tags = {
       Name = "${var.project_name}-${var.environment}-public-root-volume"
@@ -86,6 +87,7 @@ resource "aws_instance" "private" {
   subnet_id              = var.private_subnet_id
   vpc_security_group_ids = [var.private_security_group_id]
   key_name               = var.key_name
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name # ← ADD THIS
 
   # No public IP for private instance
   associate_public_ip_address = false

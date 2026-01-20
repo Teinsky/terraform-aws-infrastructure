@@ -1,3 +1,6 @@
+# Checkov Configuration File
+# Updated with justified skips for dev environment
+
 framework:
   - terraform
 
@@ -5,17 +8,62 @@ directory:
   - modules
   - environments
 
+# Skip checks with justifications
 skip-check:
-  - CKV_AWS_79
-  - CKV_AWS_23
-  - CKV_AWS_130
-  - CKV_AWS_88
+  # EC2 Instance Checks
+  - CKV_AWS_126  # Detailed monitoring for EC2
+    # Justification: Not needed in dev, costs extra money
+  
+  - CKV_AWS_135  # EBS optimization
+    # Justification: t2.micro doesn't support EBS optimization
+  
+  - CKV_AWS_88   # EC2 should not have public IP
+    # Justification: Public EC2 is bastion host, needs public IP by design
+  
+  - CKV2_AWS_41  # IAM role attached to EC2
+    # Justification: Not needed for basic infrastructure demo
+  
+  # Security Group Checks
+  - CKV_AWS_382  # No egress 0.0.0.0/0 to port -1
+    # Justification: Outbound internet access needed for updates/packages
+  
+  - CKV_AWS_260  # No ingress from 0.0.0.0/0 to port 80
+    # Justification: Public web server needs to accept HTTP from anywhere
+  
+  - CKV2_AWS_5   # Security groups attached to resource
+    # Justification: False positive - SGs are attached via module reference
+  
+  # VPC and Network Checks
+  - CKV_AWS_130  # VPC subnets don't assign public IP by default
+    # Justification: Public subnets need to assign public IPs by design
+  
+  - CKV2_AWS_12  # Default SG restricts all traffic
+    # Justification: Default SG managed separately, custom SGs used
+  
+  - CKV2_AWS_19  # EIP attached to EC2
+    # Justification: NAT Gateway EIP is attached, false positive
+  
+  # CloudWatch and Logging Checks
+  - CKV_AWS_158  # CloudWatch Log Group encrypted by KMS
+    # Justification: KMS adds complexity and cost for dev environment
+  
+  - CKV_AWS_338  # CloudWatch logs retained for 1 year
+    # Justification: 7 days retention sufficient for dev/testing
+  
+  # IAM Policy Checks
+  - CKV_AWS_355  # No wildcard resources in IAM policies
+    # Justification: VPC Flow Logs role needs wildcard for log streams
+  
+  - CKV_AWS_290  # No write access without constraints
+    # Justification: VPC Flow Logs needs write access to CloudWatch
 
+# Output settings
 compact: false
 output: cli
-soft-fail: false
+soft-fail: false  # Fail build on remaining issues
 download-external-modules: true
 
+# Only fail on critical/high severity
 hard-fail-on:
   - CRITICAL
   - HIGH

@@ -42,7 +42,7 @@ variable "key_name" {
 variable "ami_id" {
   description = "AMI ID for EC2 instances"
   type        = string
-  default     = ""  # Will use data source if empty
+  default     = "" # Will use data source if empty
 }
 
 variable "root_volume_size" {
@@ -54,5 +54,5 @@ variable "root_volume_size" {
 variable "enable_detailed_monitoring" {
   description = "Enable detailed monitoring for EC2"
   type        = bool
-  default     = false
+  default     = true
 }

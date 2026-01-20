@@ -16,7 +16,7 @@ variable "environment" {
 variable "allowed_ssh_cidr" {
   description = "CIDR block allowed to SSH into public EC2"
   type        = string
-  default     = "0.0.0.0/0"  # Nên thay bằng IP cụ thể của bạn
+  default     = "0.0.0.0/0" # Nên thay bằng IP cụ thể của bạn
 }
 
 variable "vpc_cidr" {
