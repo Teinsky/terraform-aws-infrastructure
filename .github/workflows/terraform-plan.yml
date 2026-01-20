@@ -2,13 +2,6 @@
 name: 'Terraform Plan'
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'modules/**'
-      - 'environments/**'
-      - '.github/workflows/terraform-plan.yml'
   pull_request:
     branches:
       - main
@@ -66,7 +59,7 @@ jobs:
         id: plan
         working-directory: ${{ env.WORKING_DIR }}
         run: |
-          terraform plan -no-color -out=tfplan
+          terraform plan -no-color -var="key_name=my-terraform-key" -out=tfplan
           terraform show -no-color tfplan > plan.txt
         continue-on-error: true
 
