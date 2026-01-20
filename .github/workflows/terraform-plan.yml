@@ -1,6 +1,6 @@
 # File: .github/workflows/terraform-plan.yml
 name: 'Terraform Plan'
-# comments on pull requests to main branch or manual trigger
+
 on:
   pull_request:
     branches:
