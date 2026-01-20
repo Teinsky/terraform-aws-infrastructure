@@ -1,24 +1,14 @@
 # File: modules/ec2/main.tf
 
-# Data source to get latest Amazon Linux 2 AMI
-data "aws_ami" "amazon_linux_2" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
+# Amazon Linux 2 AMI ID (hardcoded to avoid IAM permission issues)
+# AMI ID for us-east-1: ami-0771b6766e1e61632
+locals {
+  ami_id = "ami-0771b6766e1e61632"  # Amazon Linux 2 in us-east-1
 }
 
 # Public EC2 Instance (Bastion Host)
 resource "aws_instance" "public" {
-  ami                    = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
+  ami                    = local.ami_id
   instance_type          = var.instance_type
   subnet_id              = var.public_subnet_id
   vpc_security_group_ids = [var.public_security_group_id]
@@ -82,7 +72,7 @@ resource "aws_instance" "public" {
 
 # Private EC2 Instance
 resource "aws_instance" "private" {
-  ami                    = var.ami_id != "" ? var.ami_id : data.aws_ami.amazon_linux_2.id
+  ami                    = local.ami_id
   instance_type          = var.instance_type
   subnet_id              = var.private_subnet_id
   vpc_security_group_ids = [var.private_security_group_id]
